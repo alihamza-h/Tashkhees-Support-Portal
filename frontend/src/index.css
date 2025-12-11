@@ -46,6 +46,62 @@
   color-scheme: light;
 }
 
+/* Lavender theme: force dark text for any white/neutral utility classes */
+:root.theme-lavender .text-white,
+:root.theme-lavender .text-neutral-50,
+:root.theme-lavender .text-neutral-100,
+:root.theme-lavender .text-neutral-200,
+:root.theme-lavender .text-neutral-300,
+:root.theme-lavender .text-gray-200,
+:root.theme-lavender .text-gray-300,
+:root.theme-lavender .text-gray-400,
+:root.theme-lavender .text-gray-500 {
+  color: #0f0f0f !important;
+}
+
+/* Lavender theme: prevent transparent utility backgrounds/borders from washing out */
+:root.theme-lavender [class*="bg-"][class*="/"] {
+  background-color: var(--color-card) !important;
+}
+
+:root.theme-lavender [class*="border-"][class*="/"] {
+  border-color: var(--color-border) !important;
+}
+
+/* Enhanced Light: force dark brown text for any white/neutral utility classes (exclude sidebar) */
+:root.theme-light .text-white,
+:root.theme-light .text-neutral-50,
+:root.theme-light .text-neutral-100,
+:root.theme-light .text-neutral-200,
+:root.theme-light .text-neutral-300,
+:root.theme-light .text-gray-200,
+:root.theme-light .text-gray-300,
+:root.theme-light .text-gray-400,
+:root.theme-light .text-gray-500 {
+  color: #331c08 !important;
+}
+
+:root.theme-light .sidebar-dark .text-white,
+:root.theme-light .sidebar-dark .text-neutral-50,
+:root.theme-light .sidebar-dark .text-neutral-100,
+:root.theme-light .sidebar-dark .text-neutral-200,
+:root.theme-light .sidebar-dark .text-neutral-300,
+:root.theme-light .sidebar-dark .text-gray-200,
+:root.theme-light .sidebar-dark .text-gray-300,
+:root.theme-light .sidebar-dark .text-gray-400,
+:root.theme-light .sidebar-dark .text-gray-500 {
+  color: #ffffff !important;
+}
+
+/* Enhanced Light: prevent transparent utility backgrounds/borders from washing out */
+:root.theme-light [class*="bg-"][class*="/"] {
+  background-color: var(--color-card) !important;
+}
+
+:root.theme-light [class*="border-"][class*="/"] {
+  border-color: var(--color-border) !important;
+}
+
 @layer base {
   * {
     border-color: var(--color-border);
@@ -175,6 +231,17 @@
     animation: float 20s infinite ease-in-out;
     opacity: 0.4;
   }
+
+  /* Row and card borders */
+  .row-bordered {
+    border: 1px solid var(--color-border);
+    background: var(--color-card);
+  }
+
+  .row-hover:hover {
+    background: color-mix(in srgb, var(--color-card) 85%, #ffffff 15%);
+    box-shadow: var(--color-shadow-soft);
+  }
 }
 
 @keyframes gradient {
@@ -240,4 +307,29 @@
 
 .dark ::-webkit-scrollbar-thumb:hover {
   background: #65686e;
+}
+
+/* Sidebar stays white text on dark background in all themes */
+.sidebar-dark {
+  background: linear-gradient(to bottom, #0b0c0f, #11141a 40%, #0b0c0f 100%);
+  color: #ffffff;
+}
+
+:root.theme-lavender .sidebar-dark,
+:root.theme-light .sidebar-dark,
+:root.theme-dark .sidebar-dark {
+  color: #ffffff;
+}
+
+:root.theme-lavender .sidebar-dark .text-white,
+:root.theme-lavender .sidebar-dark .text-neutral-50,
+:root.theme-lavender .sidebar-dark .text-neutral-100,
+:root.theme-lavender .sidebar-dark .text-neutral-200,
+:root.theme-lavender .sidebar-dark .text-neutral-300,
+:root.theme-lavender .sidebar-dark .text-neutral-400,
+:root.theme-lavender .sidebar-dark .text-gray-200,
+:root.theme-lavender .sidebar-dark .text-gray-300,
+:root.theme-lavender .sidebar-dark .text-gray-400,
+:root.theme-lavender .sidebar-dark .text-gray-500 {
+  color: #ffffff !important;
 }

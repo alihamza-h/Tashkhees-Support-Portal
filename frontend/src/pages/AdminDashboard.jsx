@@ -226,7 +226,7 @@ const AdminDashboard = () => {
             <motion.aside
                 initial={{ x: -100, opacity: 0 }}
                 animate={{ x: 0, opacity: 1, width: isCollapsed ? 80 : 288 }}
-                className="bg-gradient-to-b from-neutral-950 via-neutral-900 to-neutral-950 border-r border-neutral-800 flex flex-col fixed h-full z-40 transition-all duration-300"
+                className="sidebar-dark bg-gradient-to-b from-neutral-950 via-neutral-900 to-neutral-950 border-r border-neutral-800 flex flex-col fixed h-full z-40 transition-all duration-300"
             >
                 {/* Brand Header */}
                 <div className={`p-6 border-b border-neutral-800 flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'}`}>
@@ -374,12 +374,12 @@ const AdminDashboard = () => {
                                 </h3>
                                 <div className="grid grid-cols-2 gap-4">
                                     {[
-                                        { label: 'Critical', value: stats.critical || 0, color: 'from-critical-500 to-critical-700', emoji: '🔴' },
-                                        { label: 'High', value: stats.high || 0, color: 'from-high-500 to-high-700', emoji: '🟠' },
-                                        { label: 'Medium', value: stats.medium || 0, color: 'from-medium-500 to-medium-700', emoji: '🟡' },
-                                        { label: 'Low', value: stats.low || 0, color: 'from-low-500 to-low-700', emoji: '⚪' },
+                                        { label: 'Critical', value: stats.critical || 0, emoji: '🔴' },
+                                        { label: 'High', value: stats.high || 0, emoji: '🟠' },
+                                        { label: 'Medium', value: stats.medium || 0, emoji: '🟡' },
+                                        { label: 'Low', value: stats.low || 0, emoji: '⚪' },
                                     ].map((item, i) => (
-                                        <div key={i} className={`p-4 rounded-xl bg-gradient-to-br ${item.color} bg-opacity-20 border border-white/10`}>
+                                        <div key={i} className="p-4 rounded-xl row-bordered row-hover">
                                             <p className="text-3xl font-bold text-white">{item.value}</p>
                                             <p className="text-neutral-300 text-sm">{item.emoji} {item.label}</p>
                                         </div>
@@ -393,42 +393,42 @@ const AdminDashboard = () => {
                             <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
                                 <FaUsers className="text-primary-400" /> Developer Workload
                             </h3>
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                {workload.map((dev, i) => (
-                                    <motion.div key={dev.developer.id} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.1 }}
-                                        className="p-4 bg-neutral-800/50 rounded-xl border border-neutral-700"
-                                    >
-                                        <div className="flex items-center gap-3 mb-3">
-                                            <div className="w-10 h-10 rounded-full bg-gradient-to-r from-primary-500 to-accent-500 flex items-center justify-center">
-                                                <FaCode className="text-white" />
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                        {workload.map((dev, i) => (
+                                            <motion.div key={dev.developer.id} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.1 }}
+                                                className="p-4 rounded-xl row-bordered row-hover"
+                                            >
+                                                <div className="flex items-center gap-3 mb-3">
+                                                    <div className="w-10 h-10 rounded-full bg-gradient-to-r from-primary-500 to-accent-500 flex items-center justify-center">
+                                                        <FaCode className="text-white" />
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-white font-semibold">{dev.developer.name}</p>
+                                                        <p className="text-neutral-400 text-xs">{dev.developer.email}</p>
+                                                    </div>
+                                                </div>
+                                                <div className="grid grid-cols-3 gap-2 text-center">
+                                                    <div className="p-2 rounded-lg row-bordered row-hover">
+                                                        <p className="text-xl font-bold text-primary-400">{dev.tickets.total}</p>
+                                                        <p className="text-[10px] text-neutral-400">Total</p>
+                                                    </div>
+                                                    <div className="p-2 rounded-lg row-bordered row-hover">
+                                                        <p className="text-xl font-bold text-inprogress-400">{dev.tickets.inProgress}</p>
+                                                        <p className="text-[10px] text-neutral-400">Active</p>
+                                                    </div>
+                                                    <div className="p-2 rounded-lg row-bordered row-hover">
+                                                        <p className="text-xl font-bold text-completed-400">{dev.tickets.completed}</p>
+                                                        <p className="text-[10px] text-neutral-400">Done</p>
+                                                    </div>
+                                                </div>
+                                            </motion.div>
+                                        ))}
+                                        {workload.length === 0 && (
+                                            <div className="col-span-3 text-center py-8 text-gray-400">
+                                                No developers yet. Create one from "Create User" menu.
                                             </div>
-                                            <div>
-                                                <p className="text-white font-semibold">{dev.developer.name}</p>
-                                                <p className="text-neutral-400 text-xs">{dev.developer.email}</p>
-                                            </div>
-                                        </div>
-                                        <div className="grid grid-cols-3 gap-2 text-center">
-                                            <div className="bg-primary-500/20 rounded-lg p-2">
-                                                <p className="text-xl font-bold text-primary-400">{dev.tickets.total}</p>
-                                                <p className="text-[10px] text-neutral-400">Total</p>
-                                            </div>
-                                            <div class="bg-inprogress-500/20 rounded-lg p-2">
-                                                <p className="text-xl font-bold text-inprogress-400">{dev.tickets.inProgress}</p>
-                                                <p className="text-[10px] text-neutral-400">Active</p>
-                                            </div>
-                                            <div className="bg-completed-500/20 rounded-lg p-2">
-                                                <p className="text-xl font-bold text-completed-400">{dev.tickets.completed}</p>
-                                                <p className="text-[10px] text-neutral-400">Done</p>
-                                            </div>
-                                        </div>
-                                    </motion.div>
-                                ))}
-                                {workload.length === 0 && (
-                                    <div className="col-span-3 text-center py-8 text-gray-400">
-                                        No developers yet. Create one from "Create User" menu.
+                                        )}
                                     </div>
-                                )}
-                            </div>
                         </Card>
 
                         {/* License Keys Summary */}
@@ -437,15 +437,15 @@ const AdminDashboard = () => {
                                 <FaKey className="text-yellow-400" /> License Keys
                             </h3>
                             <div className="grid grid-cols-3 gap-4">
-                                <div className="text-center p-4 bg-white/5 rounded-xl">
+                                <div className="text-center p-4 rounded-xl row-bordered row-hover">
                                     <p className="text-3xl font-bold text-white">{licenseStats.total || 0}</p>
                                     <p className="text-gray-400 text-sm">Total Keys</p>
                                 </div>
-                                <div className="text-center p-4 bg-green-500/10 rounded-xl">
+                                <div className="text-center p-4 rounded-xl row-bordered row-hover">
                                     <p className="text-3xl font-bold text-green-400">{licenseStats.available || 0}</p>
                                     <p className="text-gray-400 text-sm">Available</p>
                                 </div>
-                                <div className="text-center p-4 bg-gray-500/10 rounded-xl">
+                                <div className="text-center p-4 rounded-xl row-bordered row-hover">
                                     <p className="text-3xl font-bold text-gray-400">{licenseStats.used || 0}</p>
                                     <p className="text-gray-400 text-sm">Used</p>
                                 </div>
@@ -481,7 +481,7 @@ const AdminDashboard = () => {
                                 {themes.map((opt) => (
                                     <div
                                         key={opt.id}
-                                        className={`p-4 rounded-xl border ${theme === opt.id ? 'border-primary-400 shadow-lg' : 'border-white/10'} bg-white/5`}
+                                        className={`p-4 rounded-xl ${theme === opt.id ? 'border border-primary-400 shadow-lg' : 'row-bordered row-hover'}`}
                                     >
                                         <div
                                             className="h-24 rounded-lg mb-3"
@@ -553,7 +553,7 @@ const AdminDashboard = () => {
                                     <p className="text-gray-400">Loading tickets...</p>
                                 </div>
                             ) : tickets.length === 0 ? (
-                                <div className="text-center py-12">
+                                <div className="text-center py-12 row-bordered row-hover">
                                     <FaTicketAlt className="text-5xl text-gray-600 mx-auto mb-4" />
                                     <p className="text-gray-400 mb-4">No tickets found</p>
                                     <Button onClick={() => setActiveSection('create-ticket')}>Create First Ticket</Button>
@@ -580,7 +580,7 @@ const AdminDashboard = () => {
                                                     initial={{ opacity: 0, x: -20 }}
                                                     animate={{ opacity: 1, x: 0 }}
                                                     transition={{ delay: index * 0.02 }}
-                                                    className="border-b border-white/5 hover:bg-white/5"
+                                                    className="ticket-row row-bordered row-hover"
                                                 >
                                                     <td className="py-3 px-3 font-mono text-purple-400 font-semibold">{ticket.ticketId}</td>
                                                     <td className="py-3 px-3">
