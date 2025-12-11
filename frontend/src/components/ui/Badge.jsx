@@ -5,60 +5,60 @@ import { FaCircle } from 'react-icons/fa';
 const Badge = ({ status, className = '', size = 'md' }) => {
     const statusConfig = {
         'TO DO': {
-            bg: 'bg-blue-500/20',
-            border: 'border-blue-500/30',
-            text: 'text-blue-400',
-            dot: '#3b82f6',
+            bg: 'bg-todo-500/20',
+            border: 'border-todo-500/30',
+            text: 'text-todo-400',
+            dot: '#A78BFA', // Violet
             label: 'TO DO'
         },
         'In Progress': {
-            bg: 'bg-yellow-500/20',
-            border: 'border-yellow-500/30',
-            text: 'text-yellow-400',
-            dot: '#eab308',
+            bg: 'bg-inprogress-500/20',
+            border: 'border-inprogress-500/30',
+            text: 'text-inprogress-400',
+            dot: '#38BDF8', // Sky
             label: 'In Progress'
         },
         'In Progress QA': {
-            bg: 'bg-orange-500/20',
-            border: 'border-orange-500/30',
-            text: 'text-orange-400',
-            dot: '#f97316',
+            bg: 'bg-qa-500/20',
+            border: 'border-qa-500/30',
+            text: 'text-qa-400',
+            dot: '#E879F9', // Pink
             label: 'In Progress QA'
         },
         'Completed': {
-            bg: 'bg-emerald-500/20',
-            border: 'border-emerald-500/30',
-            text: 'text-emerald-400',
-            dot: '#10b981',
+            bg: 'bg-completed-500/20',
+            border: 'border-completed-500/30',
+            text: 'text-completed-400',
+            dot: '#34D399', // Emerald
             label: 'Completed'
         },
         'Done': {
-            bg: 'bg-green-500/20',
-            border: 'border-green-500/30',
-            text: 'text-green-400',
-            dot: '#22c55e',
+            bg: 'bg-done-500/20',
+            border: 'border-done-500/30',
+            text: 'text-done-400',
+            dot: '#2DD4BF', // Teal
             label: 'Done'
         },
-        // Legacy statuses for backwards compatibility
+        // Legacy statuses
         'Open': {
-            bg: 'bg-blue-500/20',
-            border: 'border-blue-500/30',
-            text: 'text-blue-400',
-            dot: '#3b82f6',
+            bg: 'bg-todo-500/20',
+            border: 'border-todo-500/30',
+            text: 'text-todo-400',
+            dot: '#A78BFA',
             label: 'TO DO'
         },
         'Resolved': {
-            bg: 'bg-green-500/20',
-            border: 'border-green-500/30',
-            text: 'text-green-400',
-            dot: '#22c55e',
+            bg: 'bg-completed-500/20',
+            border: 'border-completed-500/30',
+            text: 'text-completed-400',
+            dot: '#34D399',
             label: 'Resolved'
         },
         'Closed': {
-            bg: 'bg-gray-500/20',
-            border: 'border-gray-500/30',
-            text: 'text-gray-400',
-            dot: '#6b7280',
+            bg: 'bg-unassigned-500/20',
+            border: 'border-unassigned-500/30',
+            text: 'text-unassigned-400',
+            dot: '#CBD5E1',
             label: 'Closed'
         },
     };

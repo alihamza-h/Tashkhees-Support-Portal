@@ -10,10 +10,14 @@
   }
 
   body {
-    @apply bg-neutral-950 text-neutral-100 antialiased;
+    @apply bg-peach-50 text-brown-600 dark:bg-neutral-950 dark:text-neutral-100 antialiased;
     font-family: 'Inter', sans-serif;
-    background: linear-gradient(135deg, #1a1b1c 0%, #2a2b2c 50%, #1a1b1c 100%);
+    background: radial-gradient(circle at 50% 0%, #fff0e0 0%, #fff8f3 100%);
     min-height: 100vh;
+  }
+
+  .dark body {
+    background: radial-gradient(circle at 50% 0%, #2a2b2c 0%, #1a1b1c 100%);
   }
 }
 
@@ -21,41 +25,45 @@
 
   /* Glassmorphism Card */
   .glass-card {
-    @apply bg-neutral-900/40 backdrop-blur-xl border border-neutral-700/50 rounded-2xl shadow-2xl;
+    @apply bg-white/70 dark:bg-neutral-900/60 backdrop-blur-xl border border-beige-300/50 dark:border-white/5 rounded-2xl shadow-xl shadow-brown-900/5;
   }
 
   .glass-card-hover {
-    @apply glass-card transition-all duration-300 hover:bg-neutral-800/50 hover:border-primary-500/30 hover:shadow-primary-500/10 hover:shadow-2xl;
+    @apply glass-card transition-all duration-300 hover:bg-white/90 dark:hover:bg-neutral-800/60 hover:border-peach-400/50 hover:shadow-peach-500/10 hover:shadow-2xl hover:-translate-y-1;
   }
 
   /* Gradient Text */
   .gradient-text {
-    @apply bg-gradient-to-r from-primary-400 via-primary-300 to-accent-300 bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-brown-600 via-coffee-600 to-brown-700 dark:from-primary-400 dark:via-primary-300 dark:to-accent-300 bg-clip-text text-transparent;
   }
 
   /* Animated Background */
   .animated-bg {
-    background: linear-gradient(-45deg, #1a1b1c, #2a2b2c, #1a3640, #2a2b2c);
+    background: linear-gradient(-45deg, #fff8f3, #fff0e0, #ffe0c2, #fff0e0);
     background-size: 400% 400%;
     animation: gradient 15s ease infinite;
   }
 
+  .dark .animated-bg {
+    background: linear-gradient(-45deg, #1a1b1c, #2a2b2c, #1a3640, #2a2b2c);
+  }
+
   /* Input Styles */
   .input-field {
-    @apply w-full px-4 py-3 bg-neutral-900/50 border border-neutral-700 rounded-xl text-neutral-100 placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500/50 transition-all duration-300;
+    @apply w-full px-4 py-3 bg-white/80 dark:bg-neutral-900/50 border border-beige-300 dark:border-neutral-700 rounded-xl text-brown-700 dark:text-neutral-100 placeholder-beige-500 dark:placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-peach-400/50 focus:border-peach-400 transition-all duration-300;
   }
 
   /* Button Styles */
   .btn-primary {
-    @apply px-6 py-3 bg-gradient-to-r from-primary-600 to-primary-500 text-white font-semibold rounded-xl shadow-lg hover:shadow-primary-500/30 hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100;
+    @apply px-6 py-3 bg-gradient-to-r from-brown-600 to-coffee-700 text-peach-50 font-semibold rounded-xl shadow-lg shadow-brown-900/10 hover:shadow-brown-900/20 hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100;
   }
 
   .btn-secondary {
-    @apply px-6 py-3 bg-neutral-800/50 border border-neutral-700 text-neutral-200 font-semibold rounded-xl hover:bg-neutral-700/50 hover:border-neutral-600 transition-all duration-300;
+    @apply px-6 py-3 bg-beige-100/50 dark:bg-neutral-800/50 border border-beige-300 dark:border-neutral-700 text-brown-700 dark:text-neutral-200 font-semibold rounded-xl hover:bg-beige-200/50 dark:hover:bg-neutral-700/50 hover:border-beige-400 dark:hover:border-neutral-600 transition-all duration-300;
   }
 
   .btn-outline {
-    @apply px-6 py-3 border-2 border-primary-500 text-primary-400 font-semibold rounded-xl hover:bg-primary-500 hover:text-white transition-all duration-300;
+    @apply px-6 py-3 border-2 border-brown-600 text-brown-600 dark:border-primary-500 dark:text-primary-400 font-semibold rounded-xl hover:bg-brown-600 hover:text-white dark:hover:bg-primary-500 dark:hover:text-white transition-all duration-300;
   }
 
   /* Status Badges */
@@ -64,28 +72,28 @@
   }
 
   .badge-open {
-    @apply badge bg-primary-500/10 text-primary-400 border border-primary-500/20;
+    @apply badge bg-todo-500/10 text-todo-700 dark:text-todo-400 border border-todo-500/20;
   }
 
   .badge-in-progress {
-    @apply badge bg-accent-500/10 text-accent-300 border border-accent-500/20;
+    @apply badge bg-inprogress-500/10 text-inprogress-700 dark:text-inprogress-400 border border-inprogress-500/20;
   }
 
   .badge-resolved {
-    @apply badge bg-green-500/10 text-green-400 border border-green-500/20;
+    @apply badge bg-completed-500/10 text-completed-700 dark:text-completed-400 border border-completed-500/20;
   }
 
   .badge-closed {
-    @apply badge bg-neutral-500/10 text-neutral-400 border border-neutral-500/20;
+    @apply badge bg-unassigned-500/10 text-unassigned-700 dark:text-unassigned-400 border border-unassigned-500/20;
   }
 
   /* Floating Particles */
   .particle {
     position: absolute;
     border-radius: 50%;
-    background: linear-gradient(135deg, rgba(156, 212, 224, 0.2), rgba(228, 230, 163, 0.2));
+    background: linear-gradient(135deg, rgba(255, 211, 172, 0.3), rgba(204, 190, 177, 0.3));
     animation: float 20s infinite ease-in-out;
-    opacity: 0.2;
+    opacity: 0.4;
   }
 }
 
@@ -130,14 +138,26 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(15, 23, 42, 0.5);
+  background: rgba(255, 248, 243, 0.8);
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: rgba(26, 27, 28, 0.5);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(135deg, #a855f7, #3b82f6);
+  background: #ccbeb1;
   border-radius: 4px;
 }
 
+.dark ::-webkit-scrollbar-thumb {
+  background: #4c4d4f;
+}
+
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(135deg, #9333ea, #2563eb);
+  background: #b09f91;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #65686e;
 }

@@ -149,9 +149,9 @@ const MyTickets = () => {
                                             <td className="py-4 px-4 text-gray-300 max-w-xs truncate">{ticket.subject}</td>
                                             <td className="py-4 px-4">
                                                 <span className={`px-2 py-1 rounded-lg text-xs font-semibold ${ticket.priority === 'Critical' ? 'bg-red-500/20 text-red-400' :
-                                                        ticket.priority === 'High' ? 'bg-orange-500/20 text-orange-400' :
-                                                            ticket.priority === 'Medium' ? 'bg-yellow-500/20 text-yellow-400' :
-                                                                'bg-gray-500/20 text-gray-400'
+                                                    ticket.priority === 'High' ? 'bg-orange-500/20 text-orange-400' :
+                                                        ticket.priority === 'Medium' ? 'bg-yellow-500/20 text-yellow-400' :
+                                                            'bg-gray-500/20 text-gray-400'
                                                     }`}>
                                                     {ticket.priority}
                                                 </span>

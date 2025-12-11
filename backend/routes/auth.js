@@ -258,4 +258,58 @@ router.get('/me', protect, async (req, res) => {
     }
 });
 
+// @route   PUT /api/auth/profile
+// @desc    Update user profile
+// @access  Private
+router.put('/profile', protect, async (req, res) => {
+    try {
+        const user = await User.findById(req.user._id).select('+password');
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found'
+            });
+        }
+
+        // Update fields
+        if (req.body.name) user.name = req.body.name;
+        if (req.body.profilePicture) user.profilePicture = req.body.profilePicture;
+
+        // Handle password update
+        if (req.body.password && req.body.currentPassword) {
+            // Check current password
+            const isMatch = await user.comparePassword(req.body.currentPassword);
+            if (!isMatch) {
+                return res.status(401).json({
+                    success: false,
+                    message: 'Invalid current password'
+                });
+            }
+            user.password = req.body.password;
+        }
+
+        await user.save();
+
+        res.status(200).json({
+            success: true,
+            message: 'Profile updated successfully',
+            data: {
+                user: {
+                    id: user._id,
+                    name: user.name,
+                    email: user.email,
+                    role: user.role,
+                    profilePicture: user.profilePicture
+                }
+            }
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+});
+
 export default router;

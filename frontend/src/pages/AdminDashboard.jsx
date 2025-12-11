@@ -3,22 +3,25 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import {
     FaHome, FaTicketAlt, FaUserPlus, FaPlusCircle, FaSignOutAlt,
-    FaUser, FaEye, FaTimes, FaSearch, FaCrown, FaChartPie,
     FaChartBar, FaKey, FaCopy, FaEnvelope, FaLock, FaUsers,
-    FaCode, FaCheckCircle, FaClock, FaExclamationTriangle
+    FaCode, FaCheckCircle, FaClock, FaExclamationTriangle, FaUsersCog, FaEdit, FaTrash,
+    FaCrown, FaTimes, FaUser, FaSearch, FaChartPie, FaEye
 } from 'react-icons/fa';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
-import NotificationBell from '../components/NotificationBell';
+import { useSidebar } from '../context/SidebarContext';
+import Header from '../components/Header';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import Badge from '../components/ui/Badge';
 import Input from '../components/ui/Input';
+import EditUserModal from '../components/EditUserModal';
 import api from '../utils/api';
 
 const AdminDashboard = () => {
     const navigate = useNavigate();
     const { user, logout, isAdmin } = useAuth();
+    const { isCollapsed, toggleSidebar } = useSidebar();
 
     // Navigation state
     const [activeSection, setActiveSection] = useState('home');
@@ -26,6 +29,7 @@ const AdminDashboard = () => {
     // Data state
     const [tickets, setTickets] = useState([]);
     const [developers, setDevelopers] = useState([]);
+    const [allUsers, setAllUsers] = useState([]);
     const [stats, setStats] = useState({});
     const [workload, setWorkload] = useState([]);
     const [licenses, setLicenses] = useState([]);
@@ -40,6 +44,8 @@ const AdminDashboard = () => {
     const [newUser, setNewUser] = useState({ name: '', email: '', password: '' });
     const [creatingUser, setCreatingUser] = useState(false);
     const [generatedLicense, setGeneratedLicense] = useState(null);
+    const [showEditUserModal, setShowEditUserModal] = useState(false);
+    const [selectedUser, setSelectedUser] = useState(null);
 
     // Ticket creation state
     const [showCreateTicketModal, setShowCreateTicketModal] = useState(false);
@@ -62,7 +68,7 @@ const AdminDashboard = () => {
 
     const fetchAllData = async () => {
         setLoading(true);
-        await Promise.all([fetchTickets(), fetchDevelopers(), fetchWorkload(), fetchLicenses()]);
+        await Promise.all([fetchTickets(), fetchDevelopers(), fetchWorkload(), fetchLicenses(), fetchAllUsers()]);
         setLoading(false);
     };
 
@@ -101,6 +107,13 @@ const AdminDashboard = () => {
             setLicenses(response.data.data.licenses);
             setLicenseStats(response.data.data.stats);
         } catch (error) { console.error('Failed to fetch licenses'); }
+    };
+
+    const fetchAllUsers = async () => {
+        try {
+            const response = await api.get('/users');
+            setAllUsers(response.data.data.users);
+        } catch (error) { console.error('Failed to fetch users'); }
     };
 
     const handleAssignTicket = async (developerId) => {
@@ -200,6 +213,7 @@ const AdminDashboard = () => {
         { id: 'home', icon: FaHome, label: 'Dashboard' },
         { id: 'tickets', icon: FaTicketAlt, label: 'All Tickets' },
         { id: 'users', icon: FaUserPlus, label: 'Create User' },
+        { id: 'update-profiles', icon: FaUsersCog, label: 'Update Profiles' },
         { id: 'create-ticket', icon: FaPlusCircle, label: 'New Ticket' },
     ];
 
@@ -208,32 +222,52 @@ const AdminDashboard = () => {
             {/* ============ LEFT SIDEBAR ============ */}
             <motion.aside
                 initial={{ x: -100, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                className="w-72 bg-gradient-to-b from-neutral-950 via-neutral-900 to-neutral-950 border-r border-neutral-800 flex flex-col fixed h-full z-40"
+                animate={{ x: 0, opacity: 1, width: isCollapsed ? 80 : 288 }}
+                className="bg-gradient-to-b from-neutral-950 via-neutral-900 to-neutral-950 border-r border-neutral-800 flex flex-col fixed h-full z-40 transition-all duration-300"
             >
                 {/* Brand Header */}
-                <div className="p-6 border-b border-neutral-800">
+                <div className={`p-6 border-b border-neutral-800 flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'}`}>
                     <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary-400 via-primary-500 to-primary-600 flex items-center justify-center shadow-lg shadow-primary-500/20">
+                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary-400 via-primary-500 to-primary-600 flex items-center justify-center shadow-lg shadow-primary-500/20 shrink-0">
                             <FaCrown className="text-white text-xl" />
                         </div>
-                        <div>
-                            <h1 className="text-xl font-bold text-white">Super Admin</h1>
-                            <p className="text-xs text-neutral-400">Tashkhees Portal</p>
-                        </div>
+                        {!isCollapsed && (
+                            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                                <h1 className="text-xl font-bold text-white">Super Admin</h1>
+                                <p className="text-xs text-neutral-400">Tashkhees Portal</p>
+                            </motion.div>
+                        )}
                     </div>
+                    {!isCollapsed && (
+                        <button onClick={toggleSidebar} className="text-neutral-400 hover:text-white transition-colors">
+                            <FaTimes />
+                        </button>
+                    )}
                 </div>
 
+                {/* Toggle Button (Collapsed State) */}
+                {isCollapsed && (
+                    <button
+                        onClick={toggleSidebar}
+                        className="mx-auto mt-4 p-2 text-neutral-400 hover:text-white transition-colors"
+                        aria-label="Expand Sidebar"
+                    >
+                        <FaChartBar className="rotate-90" />
+                    </button>
+                )}
+
                 {/* User Profile */}
-                <div className="p-4 mx-4 mt-4 bg-neutral-800/50 rounded-xl border border-neutral-700">
+                <div className={`p-4 mx-4 mt-4 bg-neutral-800/50 rounded-xl border border-neutral-700 ${isCollapsed ? 'flex justify-center' : ''}`}>
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-r from-primary-500 to-accent-500 flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-r from-primary-500 to-accent-500 flex items-center justify-center shrink-0">
                             <FaUser className="text-white" />
                         </div>
-                        <div className="flex-1 min-w-0">
-                            <p className="text-white font-semibold text-sm truncate">{user?.name}</p>
-                            <p className="text-neutral-400 text-xs truncate">{user?.email}</p>
-                        </div>
+                        {!isCollapsed && (
+                            <div className="flex-1 min-w-0">
+                                <p className="text-white font-semibold text-sm truncate">{user?.name}</p>
+                                <p className="text-neutral-400 text-xs truncate">{user?.email}</p>
+                            </div>
+                        )}
                     </div>
                 </div>
 
@@ -244,34 +278,34 @@ const AdminDashboard = () => {
                             key={item.id}
                             onClick={() => setActiveSection(item.id)}
                             className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${activeSection === item.id
-                                    ? 'bg-gradient-to-r from-primary-600/80 to-primary-500/80 text-white shadow-lg shadow-primary-500/20'
-                                    : 'text-neutral-400 hover:bg-neutral-800 hover:text-white'
-                                }`}
+                                ? 'bg-gradient-to-r from-primary-600/80 to-primary-500/80 text-white shadow-lg shadow-primary-500/20'
+                                : 'text-neutral-400 hover:bg-neutral-800 hover:text-white'
+                                } ${isCollapsed ? 'justify-center' : ''}`}
+                            title={isCollapsed ? item.label : ''}
                         >
-                            <item.icon className={activeSection === item.id ? 'text-white' : ''} />
-                            {item.label}
+                            <item.icon className={`${activeSection === item.id ? 'text-white' : ''} text-xl shrink-0`} />
+                            {!isCollapsed && <span>{item.label}</span>}
                         </button>
                     ))}
                 </nav>
 
-                {/* Notification Bell & Sign Out */}
-                <div className="p-4 border-t border-neutral-800 space-y-3">
-                    <div className="flex items-center justify-between px-4 py-2">
-                        <span className="text-neutral-400 text-sm">Notifications</span>
-                        <NotificationBell />
-                    </div>
+                {/* Sign Out */}
+                <div className="p-4 border-t border-neutral-800">
                     <button
                         onClick={handleLogout}
-                        className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-400 hover:bg-red-500/10 transition-all font-medium"
+                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-400 hover:bg-red-500/10 transition-all font-medium ${isCollapsed ? 'justify-center' : ''}`}
+                        title={isCollapsed ? 'Sign Out' : ''}
                     >
-                        <FaSignOutAlt />
-                        Sign Out
+                        <FaSignOutAlt className="text-xl shrink-0" />
+                        {!isCollapsed && <span>Sign Out</span>}
                     </button>
                 </div>
             </motion.aside>
 
             {/* ============ MAIN CONTENT ============ */}
-            <main className="flex-1 ml-72 p-8 min-h-screen">
+            <main className={`flex-1 p-8 min-h-screen transition-all duration-300 ${isCollapsed ? 'ml-20' : 'ml-72'}`}>
+                <Header />
+
                 {/* HOME SECTION - Dashboard Overview */}
                 {activeSection === 'home' && (
                     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
@@ -282,9 +316,9 @@ const AdminDashboard = () => {
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
                             {[
                                 { label: 'Total Tickets', value: stats.total || 0, icon: FaTicketAlt, color: 'from-primary-500 to-primary-400' },
-                                { label: 'Unassigned', value: stats.unassigned || 0, icon: FaExclamationTriangle, color: 'from-red-500 to-red-400' },
-                                { label: 'In Progress', value: (stats.inProgress || 0) + (stats.inProgressQA || 0), icon: FaClock, color: 'from-accent-500 to-accent-400' },
-                                { label: 'Completed', value: (stats.completed || 0) + (stats.done || 0), icon: FaCheckCircle, color: 'from-green-500 to-green-400' },
+                                { label: 'Unassigned', value: stats.unassigned || 0, icon: FaExclamationTriangle, color: 'from-unassigned-500 to-unassigned-400' },
+                                { label: 'In Progress', value: (stats.inProgress || 0) + (stats.inProgressQA || 0), icon: FaClock, color: 'from-inprogress-500 to-inprogress-400' },
+                                { label: 'Completed', value: (stats.completed || 0) + (stats.done || 0), icon: FaCheckCircle, color: 'from-completed-500 to-completed-400' },
                             ].map((stat, i) => (
                                 <motion.div key={i} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: i * 0.1 }}>
                                     <Card className="relative overflow-hidden">
@@ -312,11 +346,11 @@ const AdminDashboard = () => {
                                 </h3>
                                 <div className="space-y-3">
                                     {[
-                                        { label: 'TO DO', value: stats.toDo || 0, color: 'bg-neutral-600' },
-                                        { label: 'In Progress', value: stats.inProgress || 0, color: 'bg-primary-500' },
-                                        { label: 'QA Testing', value: stats.inProgressQA || 0, color: 'bg-accent-500' },
-                                        { label: 'Completed', value: stats.completed || 0, color: 'bg-green-500' },
-                                        { label: 'Done', value: stats.done || 0, color: 'bg-green-600' },
+                                        { label: 'TO DO', value: stats.toDo || 0, color: 'bg-todo-500' },
+                                        { label: 'In Progress', value: stats.inProgress || 0, color: 'bg-inprogress-500' },
+                                        { label: 'QA Testing', value: stats.inProgressQA || 0, color: 'bg-qa-500' },
+                                        { label: 'Completed', value: stats.completed || 0, color: 'bg-completed-500' },
+                                        { label: 'Done', value: stats.done || 0, color: 'bg-done-500' },
                                     ].map((item, i) => (
                                         <div key={i} className="flex items-center gap-3">
                                             <div className={`w-3 h-3 rounded-full ${item.color}`} />
@@ -337,10 +371,10 @@ const AdminDashboard = () => {
                                 </h3>
                                 <div className="grid grid-cols-2 gap-4">
                                     {[
-                                        { label: 'Critical', value: stats.critical || 0, color: 'from-red-500 to-red-700', emoji: '🔴' },
-                                        { label: 'High', value: stats.high || 0, color: 'from-orange-500 to-orange-700', emoji: '🟠' },
-                                        { label: 'Medium', value: stats.medium || 0, color: 'from-accent-500 to-accent-700', emoji: '🟡' },
-                                        { label: 'Low', value: stats.low || 0, color: 'from-neutral-500 to-neutral-700', emoji: '⚪' },
+                                        { label: 'Critical', value: stats.critical || 0, color: 'from-critical-500 to-critical-700', emoji: '🔴' },
+                                        { label: 'High', value: stats.high || 0, color: 'from-high-500 to-high-700', emoji: '🟠' },
+                                        { label: 'Medium', value: stats.medium || 0, color: 'from-medium-500 to-medium-700', emoji: '🟡' },
+                                        { label: 'Low', value: stats.low || 0, color: 'from-low-500 to-low-700', emoji: '⚪' },
                                     ].map((item, i) => (
                                         <div key={i} className={`p-4 rounded-xl bg-gradient-to-br ${item.color} bg-opacity-20 border border-white/10`}>
                                             <p className="text-3xl font-bold text-white">{item.value}</p>
@@ -375,12 +409,12 @@ const AdminDashboard = () => {
                                                 <p className="text-xl font-bold text-primary-400">{dev.tickets.total}</p>
                                                 <p className="text-[10px] text-neutral-400">Total</p>
                                             </div>
-                                            <div className="bg-accent-500/20 rounded-lg p-2">
-                                                <p className="text-xl font-bold text-accent-400">{dev.tickets.inProgress}</p>
+                                            <div class="bg-inprogress-500/20 rounded-lg p-2">
+                                                <p className="text-xl font-bold text-inprogress-400">{dev.tickets.inProgress}</p>
                                                 <p className="text-[10px] text-neutral-400">Active</p>
                                             </div>
-                                            <div className="bg-green-500/20 rounded-lg p-2">
-                                                <p className="text-xl font-bold text-green-400">{dev.tickets.completed}</p>
+                                            <div className="bg-completed-500/20 rounded-lg p-2">
+                                                <p className="text-xl font-bold text-completed-400">{dev.tickets.completed}</p>
                                                 <p className="text-[10px] text-neutral-400">Done</p>
                                             </div>
                                         </div>
@@ -502,9 +536,9 @@ const AdminDashboard = () => {
                                                         <span className="px-2 py-1 bg-blue-500/20 text-blue-400 rounded text-xs">{ticket.product}</span>
                                                     </td>
                                                     <td className="py-3 px-3">
-                                                        <span className={`px-2 py-1 rounded text-xs font-bold ${ticket.priority === 'Critical' ? 'bg-red-500/20 text-red-400 animate-pulse' :
-                                                            ticket.priority === 'High' ? 'bg-orange-500/20 text-orange-400' :
-                                                                ticket.priority === 'Medium' ? 'bg-yellow-500/20 text-yellow-400' : 'bg-gray-500/20 text-gray-400'
+                                                        <span className={`px-2 py-1 rounded text-xs font-bold ${ticket.priority === 'Critical' ? 'bg-critical-500/20 text-critical-400 animate-pulse' :
+                                                            ticket.priority === 'High' ? 'bg-high-500/20 text-high-400' :
+                                                                ticket.priority === 'Medium' ? 'bg-medium-500/20 text-medium-400' : 'bg-low-500/20 text-low-400'
                                                             }`}>{ticket.priority}</span>
                                                     </td>
                                                     <td className="py-3 px-3"><Badge status={ticket.status} size="sm" /></td>
@@ -693,9 +727,74 @@ const AdminDashboard = () => {
                         </Card>
                     </motion.div>
                 )}
+
+                {/* UPDATE PROFILES SECTION */}
+                {activeSection === 'update-profiles' && (
+                    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+                        <h1 className="text-3xl font-bold text-white mb-2">👥 User Management</h1>
+                        <p className="text-gray-400 mb-8">View and manage all users in the system</p>
+
+                        <Card>
+                            <div className="overflow-x-auto">
+                                <table className="w-full">
+                                    <thead>
+                                        <tr className="border-b border-white/10">
+                                            <th className="text-left py-3 px-3 text-gray-300 text-sm font-semibold">Name</th>
+                                            <th className="text-left py-3 px-3 text-gray-300 text-sm font-semibold">Email</th>
+                                            <th className="text-left py-3 px-3 text-gray-300 text-sm font-semibold">Role</th>
+                                            <th className="text-left py-3 px-3 text-gray-300 text-sm font-semibold">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {allUsers.map((u, index) => (
+                                            <motion.tr
+                                                key={u._id}
+                                                initial={{ opacity: 0, x: -20 }}
+                                                animate={{ opacity: 1, x: 0 }}
+                                                transition={{ delay: index * 0.02 }}
+                                                className="border-b border-white/5 hover:bg-white/5"
+                                            >
+                                                <td className="py-3 px-3 text-white font-medium">{u.name}</td>
+                                                <td className="py-3 px-3 text-gray-400">{u.email}</td>
+                                                <td className="py-3 px-3">
+                                                    <span className={`px-2 py-1 rounded text-xs font-bold ${u.role === 'ADMIN' ? 'bg-red-500/20 text-red-400' :
+                                                        u.role === 'DEVELOPER' ? 'bg-purple-500/20 text-purple-400' :
+                                                            'bg-green-500/20 text-green-400'
+                                                        }`}>
+                                                        {u.role}
+                                                    </span>
+                                                </td>
+                                                <td className="py-3 px-3">
+                                                    <Button
+                                                        size="sm"
+                                                        variant="secondary"
+                                                        onClick={() => { setSelectedUser(u); setShowEditUserModal(true); }}
+                                                    >
+                                                        <FaEdit /> Edit
+                                                    </Button>
+                                                </td>
+                                            </motion.tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </Card>
+                    </motion.div>
+                )}
             </main>
 
             {/* ============ MODALS ============ */}
+
+            {/* Edit User Modal */}
+            {
+                showEditUserModal && selectedUser && (
+                    <EditUserModal
+                        user={selectedUser}
+                        onClose={() => { setShowEditUserModal(false); setSelectedUser(null); }}
+                        onUpdate={fetchAllData}
+                    />
+                )
+            }
 
             {/* Assign Ticket Modal */}
             <AnimatePresence>
@@ -791,7 +890,7 @@ const AdminDashboard = () => {
                     </motion.div>
                 )}
             </AnimatePresence>
-        </div>
+        </div >
     );
 };
 

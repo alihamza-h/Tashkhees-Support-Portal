@@ -191,8 +191,8 @@ const TicketDetail = () => {
                                             animate={{ opacity: 1, x: 0 }}
                                             transition={{ delay: index * 0.1 }}
                                             className={`p-4 rounded-xl ${reply.senderRole === 'DEVELOPER'
-                                                    ? 'bg-purple-500/20 border border-purple-500/30 ml-8'
-                                                    : 'bg-white/5 border border-white/10 mr-8'
+                                                ? 'bg-purple-500/20 border border-purple-500/30 ml-8'
+                                                : 'bg-white/5 border border-white/10 mr-8'
                                                 }`}
                                         >
                                             <div className="flex items-center gap-3 mb-2">
@@ -319,8 +319,8 @@ const TicketDetail = () => {
                                                     onClick={() => handleStatusChange(status)}
                                                     disabled={ticket?.status === status || updating}
                                                     className={`w-full px-4 py-3 rounded-xl text-sm font-semibold transition-all border ${ticket?.status === status
-                                                            ? `${getStatusColor(status)} border-2`
-                                                            : 'bg-white/5 text-gray-300 hover:bg-white/10 border-white/10'
+                                                        ? `${getStatusColor(status)} border-2`
+                                                        : 'bg-white/5 text-gray-300 hover:bg-white/10 border-white/10'
                                                         } disabled:opacity-50 text-left flex items-center justify-between`}
                                                 >
                                                     <span>{status}</span>

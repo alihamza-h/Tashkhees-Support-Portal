@@ -40,6 +40,20 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: null
   },
+  dateOfBirth: {
+    type: Date,
+    default: null
+  },
+  phone: {
+    type: String,
+    trim: true,
+    default: null
+  },
+  address: {
+    type: String,
+    trim: true,
+    default: null
+  },
   createdAt: {
     type: Date,
     default: Date.now

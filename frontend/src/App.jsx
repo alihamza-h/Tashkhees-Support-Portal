@@ -2,6 +2,8 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { SidebarProvider } from './context/SidebarContext';
+import { ThemeProvider } from './context/ThemeContext';
 import Landing from './pages/Landing';
 import CreateTicket from './pages/CreateTicket';
 import Login from './pages/Login';
@@ -10,6 +12,8 @@ import AdminDashboard from './pages/AdminDashboard';
 import DeveloperDashboard from './pages/DeveloperDashboard';
 import MyTickets from './pages/MyTickets';
 import TicketDetail from './pages/TicketDetail';
+import Profile from './pages/Profile';
+import Settings from './pages/Settings';
 
 // Protected Route Component
 const ProtectedRoute = ({ children, requireAdmin = false, requireDeveloper = false }) => {
@@ -54,94 +58,114 @@ const DashboardRedirect = () => {
 function App() {
   return (
     <AuthProvider>
-      <Router>
-        <div className="App">
-          <Routes>
-            {/* Public Routes */}
-            <Route path="/" element={<Landing />} />
-            <Route path="/create-ticket" element={<CreateTicket />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
+      <ThemeProvider>
+        <SidebarProvider>
+          <Router>
+            <div className="App transition-colors duration-300">
+              <Routes>
+                {/* Public Routes */}
+                <Route path="/" element={<Landing />} />
+                <Route path="/create-ticket" element={<CreateTicket />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
 
-            {/* Dashboard Redirect */}
-            <Route
-              path="/dashboard"
-              element={
-                <ProtectedRoute>
-                  <DashboardRedirect />
-                </ProtectedRoute>
-              }
-            />
+                {/* Dashboard Redirect */}
+                <Route
+                  path="/dashboard"
+                  element={
+                    <ProtectedRoute>
+                      <DashboardRedirect />
+                    </ProtectedRoute>
+                  }
+                />
 
-            {/* Admin Dashboard */}
-            <Route
-              path="/admin"
-              element={
-                <ProtectedRoute requireAdmin={true}>
-                  <AdminDashboard />
-                </ProtectedRoute>
-              }
-            />
+                {/* Admin Dashboard */}
+                <Route
+                  path="/admin"
+                  element={
+                    <ProtectedRoute requireAdmin={true}>
+                      <AdminDashboard />
+                    </ProtectedRoute>
+                  }
+                />
 
-            {/* Developer Dashboard */}
-            <Route
-              path="/developer"
-              element={
-                <ProtectedRoute requireDeveloper={true}>
-                  <DeveloperDashboard />
-                </ProtectedRoute>
-              }
-            />
+                {/* Developer Dashboard */}
+                <Route
+                  path="/developer"
+                  element={
+                    <ProtectedRoute requireDeveloper={true}>
+                      <DeveloperDashboard />
+                    </ProtectedRoute>
+                  }
+                />
 
-            {/* User Routes */}
-            <Route
-              path="/my-tickets"
-              element={
-                <ProtectedRoute>
-                  <MyTickets />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/ticket/:id"
-              element={
-                <ProtectedRoute>
-                  <TicketDetail />
-                </ProtectedRoute>
-              }
-            />
+                {/* User Routes */}
+                <Route
+                  path="/my-tickets"
+                  element={
+                    <ProtectedRoute>
+                      <MyTickets />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/ticket/:id"
+                  element={
+                    <ProtectedRoute>
+                      <TicketDetail />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/profile"
+                  element={
+                    <ProtectedRoute>
+                      <Profile />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/settings"
+                  element={
+                    <ProtectedRoute>
+                      <Settings />
+                    </ProtectedRoute>
+                  }
+                />
 
-            {/* Fallback */}
-            <Route path="*" element={<Navigate to="/" />} />
-          </Routes>
+                {/* Fallback */}
+                <Route path="*" element={<Navigate to="/" />} />
+              </Routes>
 
-          {/* Toast Notifications */}
-          <Toaster
-            position="top-right"
-            toastOptions={{
-              duration: 3000,
-              style: {
-                background: 'rgba(30, 41, 59, 0.95)',
-                color: '#fff',
-                border: '1px rgba(255, 255, 255, 0.1)',
-                backdropFilter: 'blur(10px)',
-              },
-              success: {
-                iconTheme: {
-                  primary: '#10b981',
-                  secondary: '#fff',
-                },
-              },
-              error: {
-                iconTheme: {
-                  primary: '#ef4444',
-                  secondary: '#fff',
-                },
-              },
-            }}
-          />
-        </div>
-      </Router>
+              {/* Toast Notifications */}
+              <Toaster
+                position="top-right"
+                toastOptions={{
+                  duration: 3000,
+                  style: {
+                    background: 'rgba(30, 41, 59, 0.95)',
+                    color: '#fff',
+                    border: '1px rgba(255, 255, 255, 0.1)',
+                    backdropFilter: 'blur(10px)',
+                  },
+                  success: {
+                    iconTheme: {
+                      primary: '#10b981',
+                      secondary: '#fff',
+                    },
+                  },
+                  error: {
+                    iconTheme: {
+                      primary: '#ef4444',
+                      secondary: '#fff',
+                    },
+                  },
+                }}
+              />
+            </div>
+          </Router>
+        </SidebarProvider>
+      </ThemeProvider>
     </AuthProvider>
   );
 }

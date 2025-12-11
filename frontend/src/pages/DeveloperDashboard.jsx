@@ -70,12 +70,12 @@ const DeveloperDashboard = () => {
     const statuses = ['TO DO', 'In Progress', 'In Progress QA', 'Completed', 'Done'];
 
     const statCards = [
-        { label: 'My Tickets', value: stats.total || 0, color: 'from-blue-600 to-cyan-600', icon: FaTicketAlt },
-        { label: 'TO DO', value: stats.toDo || 0, color: 'from-blue-500 to-blue-700', icon: FaClock },
-        { label: 'In Progress', value: stats.inProgress || 0, color: 'from-yellow-500 to-orange-600', icon: FaClock },
-        { label: 'QA', value: stats.inProgressQA || 0, color: 'from-orange-500 to-red-600', icon: FaFlask },
-        { label: 'Completed', value: stats.completed || 0, color: 'from-emerald-500 to-green-600', icon: FaCheckCircle },
-        { label: 'Done', value: stats.done || 0, color: 'from-green-500 to-teal-600', icon: FaFlagCheckered },
+        { label: 'My Tickets', value: stats.total || 0, color: 'from-primary-600 to-primary-400', icon: FaTicketAlt },
+        { label: 'TO DO', value: stats.toDo || 0, color: 'from-todo-500 to-todo-700', icon: FaClock },
+        { label: 'In Progress', value: stats.inProgress || 0, color: 'from-inprogress-500 to-inprogress-700', icon: FaClock },
+        { label: 'QA', value: stats.inProgressQA || 0, color: 'from-qa-500 to-qa-700', icon: FaFlask },
+        { label: 'Completed', value: stats.completed || 0, color: 'from-completed-500 to-completed-700', icon: FaCheckCircle },
+        { label: 'Done', value: stats.done || 0, color: 'from-done-500 to-done-700', icon: FaFlagCheckered },
     ];
 
     return (
@@ -234,10 +234,10 @@ const DeveloperDashboard = () => {
                                             </td>
                                             <td className="py-4 px-4 text-gray-300 max-w-[200px] truncate text-sm">{ticket.subject}</td>
                                             <td className="py-4 px-4">
-                                                <span className={`px-2 py-1 rounded-lg text-xs font-semibold ${ticket.priority === 'Critical' ? 'bg-red-500/20 text-red-400' :
-                                                        ticket.priority === 'High' ? 'bg-orange-500/20 text-orange-400' :
-                                                            ticket.priority === 'Medium' ? 'bg-yellow-500/20 text-yellow-400' :
-                                                                'bg-gray-500/20 text-gray-400'
+                                                <span className={`px-2 py-1 rounded-lg text-xs font-semibold ${ticket.priority === 'Critical' ? 'bg-critical-500/20 text-critical-400 animate-pulse' :
+                                                    ticket.priority === 'High' ? 'bg-high-500/20 text-high-400' :
+                                                        ticket.priority === 'Medium' ? 'bg-medium-500/20 text-medium-400' :
+                                                            'bg-low-500/20 text-low-400'
                                                     }`}>
                                                     {ticket.priority}
                                                 </span>

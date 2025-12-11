@@ -99,4 +99,52 @@ router.get('/workload', protect, authorize('ADMIN'), async (req, res) => {
     }
 });
 
+// @desc    Update user (Admin only)
+// @route   PUT /api/users/:id
+// @access  Private (Admin only)
+router.put('/:id', protect, authorize('ADMIN'), async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id);
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found'
+            });
+        }
+
+        // Update fields
+        // Update fields
+        if (req.body.name) user.name = req.body.name;
+        if (req.body.role) user.role = req.body.role;
+        if (req.body.email) user.email = req.body.email;
+        if (req.body.password && req.body.password.trim() !== '') {
+            user.password = req.body.password;
+        }
+        if (req.body.dateOfBirth) user.dateOfBirth = req.body.dateOfBirth;
+        if (req.body.phone) user.phone = req.body.phone;
+        if (req.body.address) user.address = req.body.address;
+
+        await user.save();
+
+        res.status(200).json({
+            success: true,
+            message: 'User updated successfully',
+            data: {
+                user: {
+                    id: user._id,
+                    name: user.name,
+                    email: user.email,
+                    role: user.role
+                }
+            }
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+});
+
 export default router;
