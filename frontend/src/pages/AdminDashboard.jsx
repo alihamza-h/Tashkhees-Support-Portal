@@ -5,11 +5,12 @@ import {
     FaHome, FaTicketAlt, FaUserPlus, FaPlusCircle, FaSignOutAlt,
     FaChartBar, FaKey, FaCopy, FaEnvelope, FaLock, FaUsers,
     FaCode, FaCheckCircle, FaClock, FaExclamationTriangle, FaUsersCog, FaEdit, FaTrash,
-    FaCrown, FaTimes, FaUser, FaSearch, FaChartPie, FaEye
+    FaCrown, FaTimes, FaUser, FaSearch, FaChartPie, FaEye, FaPalette
 } from 'react-icons/fa';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 import { useSidebar } from '../context/SidebarContext';
+import { useTheme } from '../context/ThemeContext';
 import Header from '../components/Header';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
@@ -22,6 +23,7 @@ const AdminDashboard = () => {
     const navigate = useNavigate();
     const { user, logout, isAdmin } = useAuth();
     const { isCollapsed, toggleSidebar } = useSidebar();
+    const { theme, setTheme, themes } = useTheme();
 
     // Navigation state
     const [activeSection, setActiveSection] = useState('home');
@@ -215,6 +217,7 @@ const AdminDashboard = () => {
         { id: 'users', icon: FaUserPlus, label: 'Create User' },
         { id: 'update-profiles', icon: FaUsersCog, label: 'Update Profiles' },
         { id: 'create-ticket', icon: FaPlusCircle, label: 'New Ticket' },
+        { id: 'theme-settings', icon: FaPalette, label: 'Theme Settings' },
     ];
 
     return (
@@ -446,6 +449,59 @@ const AdminDashboard = () => {
                                     <p className="text-3xl font-bold text-gray-400">{licenseStats.used || 0}</p>
                                     <p className="text-gray-400 text-sm">Used</p>
                                 </div>
+                            </div>
+                        </Card>
+                    </motion.div>
+                )}
+
+                {/* THEME SETTINGS */}
+                {activeSection === 'theme-settings' && (
+                    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+                        <h1 className="text-3xl font-bold text-white mb-2">🎨 Theme Settings</h1>
+                        <p className="text-gray-400 mb-8">Switch the portal experience instantly for everyone.</p>
+
+                        <Card className="max-w-4xl space-y-8">
+                            <div>
+                                <label className="block text-sm font-semibold text-white mb-2">Active Theme</label>
+                                <select
+                                    value={theme}
+                                    onChange={(e) => setTheme(e.target.value)}
+                                    className="input-field"
+                                >
+                                    {themes.map((option) => (
+                                        <option key={option.id} value={option.id}>{option.label}</option>
+                                    ))}
+                                </select>
+                                <p className="text-xs text-gray-400 mt-2">
+                                    Changes apply instantly and persist for all users on their next visit.
+                                </p>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                {themes.map((opt) => (
+                                    <div
+                                        key={opt.id}
+                                        className={`p-4 rounded-xl border ${theme === opt.id ? 'border-primary-400 shadow-lg' : 'border-white/10'} bg-white/5`}
+                                    >
+                                        <div
+                                            className="h-24 rounded-lg mb-3"
+                                            style={{
+                                                background: `linear-gradient(135deg, ${opt.variables['--color-bg']}, ${opt.variables['--color-highlight']})`,
+                                                border: `1px solid ${opt.variables['--color-border']}`,
+                                                boxShadow: opt.variables['--color-shadow-soft']
+                                            }}
+                                        />
+                                        <div className="flex items-center justify-between gap-3">
+                                            <div>
+                                                <p className="text-white font-semibold">{opt.label}</p>
+                                                <p className="text-gray-400 text-xs">{opt.description}</p>
+                                            </div>
+                                            <Button size="sm" variant="secondary" onClick={() => setTheme(opt.id)}>
+                                                Apply
+                                            </Button>
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
                         </Card>
                     </motion.div>
